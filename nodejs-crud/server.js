@@ -1,21 +1,39 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const api = require('./api.js');
-// const indexroute=require('./indexroute.js');
-const userRoutes = require('./src/routes/user.routes.js');
-const productRoutes = require('./src/routes/product.routes.js')
+const express = require("express");
+const api = require("./api.js");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const userRoutes = require("./src/routes/user.routes.js");
+const productRoutes = require("./src/routes/product.routes.js");
 const port = 3000;
 const app = express();
 
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+
+app.use(
+  express.json({
+    limit: "16kb",
+  })
+);
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "16kb",
+  })
+);
+
+app.use(express.static("public"));
+
 app.listen(port, function () {
-    console.log("Server is listening at port:" + port);
+  console.log("Server is listening at port:" + port);
 });
 
-// Parses the text as url encoded data
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Parses the text as json
-app.use(bodyParser.json());
-
-app.use('/api/user', userRoutes);
-app.use('/api/product',productRoutes)
+app.use("/api/user", userRoutes);
+app.use("/api/product", productRoutes);
