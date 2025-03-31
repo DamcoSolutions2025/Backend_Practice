@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
 const ACCESS_TOKEN =
   "Qia9DwyBGXGbq6mT4dxom190rxR2wAAlX0SQRJgRI2svpahehcqi1qQWbtvISR0s";
 const REFRESH_TOKEN =
@@ -30,11 +31,11 @@ const userSchema = new mongoose.Schema(
       index: true,
     },
     avatar: {
-      type: String, //Cloudinary url
+      type: String, // Cloudinary URL
       required: true,
     },
     coverImage: {
-      type: String, //Cloudinary url
+      type: String, // Cloudinary URL
     },
     watchHistory: [
       {
@@ -44,7 +45,7 @@ const userSchema = new mongoose.Schema(
     ],
     password: {
       type: String,
-      require: [true, "Password is required"],
+      required: [true, "Password is required"],
     },
     refreshToken: {
       type: String,
@@ -52,18 +53,27 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
-  this.password = bcrypt.hash(this.password, 10);
-  next();
+  try {
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
+// Method to check if the password is correct
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-userSchema.methods.generateAccessToken = async function () {
-  return await jwt.sign(
+
+// Method to generate access token
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
     {
       _id: this._id,
       email: this.email,
@@ -76,8 +86,10 @@ userSchema.methods.generateAccessToken = async function () {
     }
   );
 };
-userSchema.methods.generateRefreshToken = async function () {
-  return await jwt.sign(
+
+// Method to generate refresh token
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
     {
       _id: this._id,
     },
@@ -88,4 +100,5 @@ userSchema.methods.generateRefreshToken = async function () {
   );
 };
 
-export const User = mongoose.model("User", userSchema);
+// ✅ Corrected export for CommonJS
+module.exports = mongoose.model("User", userSchema);

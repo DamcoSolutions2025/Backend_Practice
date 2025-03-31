@@ -12,33 +12,36 @@ const uploadOnCloudinary = async (localFilePath) => {
     if (!localFilePath) {
       return null;
     }
-    //upload the file on cloudinary
+    // Upload the file on Cloudinary
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
     });
-    //file has been uploaded successfully
+    // File has been uploaded successfully
     console.log(
-      "File has been Successfully uploaded on cloudinary",
+      "File has been successfully uploaded on Cloudinary",
       response.url
     );
     return response;
   } catch (error) {
-    fs.unlinkSync(localFilePath); //remove the locally saved temporary file as the upload operations got failed
+    fs.unlinkSync(localFilePath); // Remove the locally saved temporary file as the upload operation failed
     return null;
   }
 };
 
 // Upload an image
-const uploadResult = await cloudinary.uploader
-  .upload(
-    "https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg",
-    {
-      public_id: "shoes",
-    }
-  )
-  .catch((error) => {
+(async () => {
+  try {
+    const uploadResult = await cloudinary.uploader.upload(
+      "https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg",
+      {
+        public_id: "shoes",
+      }
+    );
+    console.log(uploadResult);
+  } catch (error) {
     console.log(error);
-  });
+  }
+})();
 
-console.log(uploadResult);
- export  {uploadOnCloudinary}
+// Correct CommonJS export
+module.exports = { uploadOnCloudinary };

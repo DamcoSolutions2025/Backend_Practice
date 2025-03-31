@@ -9,6 +9,7 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({
-  storage: storage,
-});
+const upload = multer({ storage: storage });
+
+// Exporting properly in CommonJS
+module.exports = upload;  
