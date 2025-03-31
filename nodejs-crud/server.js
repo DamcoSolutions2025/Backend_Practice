@@ -2,8 +2,9 @@ const express = require("express");
 const api = require("./api.js");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const userRoutes = require("./src/routes/user.routes.js");
+const profileRoute = require("./src/routes/profile.routes.js");
 const productRoutes = require("./src/routes/product.routes.js");
+const userRoute=require('./src/routes/user.routes.js')
 const port = 3000;
 const app = express();
 
@@ -35,5 +36,6 @@ app.listen(port, function () {
 
 app.use(cookieParser());
 
-app.use("/api/user", userRoutes);
-app.use("/api/product", productRoutes);
+app.use("/api/v1/profile", profileRoute);
+app.use("/api/v1//users",userRoute);
+app.use("/api/v1//product", productRoutes);
