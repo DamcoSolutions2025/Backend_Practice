@@ -195,9 +195,8 @@ exports.refreshAccesstoken = asyncHandler(async (req, res) => {
           "Access token refreshed succesfully"
         )
       );
-  } 
-  catch (error) {
-    throw new ApiError(401,error?.message||"Invalid Refresh Token ")
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid Refresh Token ");
   }
 });
 
